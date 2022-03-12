@@ -1,0 +1,91 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.red {
+    color: rgb(245, 8, 8);
+}
+
+.green {
+    color: rgb(11, 241, 11);
+}
+
+.container {
+    padding: 30px;
+    overflow-x: hidden;
+}
+
+.submit input {
+    width: 450px;
+    height: 50px;
+    font-size: 22px;
+}
+
+.submit button {
+    width: 100px;
+    height: 50px;
+    font-size: 20px;
+    border: 1px solid rgb(107, 103, 103);
+    color: #333;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.submit {
+    text-align: center;
+}
+
+ul {
+    transform: translateX(125px);
+}
+
+li {
+    list-style: none;
+    width: 1000px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+    height: 50px;
+    align-items: center;
+    font-size: 22px;
+    color: #333;
+}
+
+ul li span:hover {
+        cursor: pointer;
+}
+
+.delete__job {
+    color: initial !important;
+    padding: 10px;
+    margin-left: 20px;
+}
+
+.add__list {
+    animation: show 1s linear;
+}
+
+@keyframes show {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.btn__edit {
+    padding: 16px;
+    border: 1px solid #333;
+    margin-left: 10px;
+
+    &:hover {
+        cursor: pointer;
+        opacity: 0.8;
+    }
+}
