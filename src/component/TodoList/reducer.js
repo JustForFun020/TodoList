@@ -45,7 +45,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         jobsAdd: [...state.jobsAdd, action.payload],
-        // completed: false
       };
     case DELETE_JOB:
       const newJobs = [...state.jobsAdd];

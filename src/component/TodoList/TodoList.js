@@ -15,10 +15,10 @@ function Main() {
   const inputRef = useRef();
 
   // Chỉnh Sửa Công Việc Được Thêm Từ Người Dùng
-  const handleEdit_jobAdd = (item) => {
-    dispatch(setJob(item));
-    dispatch(deleteJob(item));
-
+  const handleEdit_jobAdd = (item, index) => {
+      dispatch(setJob(item))
+      dispatch(deleteJob(index))
+      
     inputRef.current.focus();
   };
 
@@ -32,11 +32,6 @@ function Main() {
     } else {
       alert("Bạn Phải Nhập Công Việc Muốn Add !!!");
     }
-  };
-
-  //   Chỉnh Sửa Trạng Thái Của Công Việc Được Lấy Từ API
-  const handleStatus_jobAdd = (isCompleted) => {
-    console.log(jobsAdd);
   };
 
   //   Gọi API
