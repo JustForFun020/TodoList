@@ -1,76 +1,20 @@
 import { useState, useEffect, useReducer, useRef } from "react";
+import Loading from "./Loading";
+import reducer, { initState, setJob, addJob, deleteJob } from "./reducer";
 import "./index.scss";
 
 const url = "https://jsonplaceholder.typicode.com/todos";
 
-// Khởi Tạo State Ban Đầu
-const initState = {
-  jobAdd: "",
-  jobsAdd: [],
-  completed: false,
-};
-
-// Action
-const SET_JOB = "set_job";
-const ADD_JOB = "add_job";
-const DELETE_JOB = "delete_job";
-
-const setJob = (payload) => {
-  return {
-    type: SET_JOB,
-    payload,
-  };
-};
-
-const addJob = (payload) => {
-  return {
-    type: ADD_JOB,
-    payload,
-  };
-};
-
-const deleteJob = (payload) => {
-  return {
-    type: DELETE_JOB,
-    payload,
-  };
-};
-
-// Reducer
-const reducer = (state, action) => {
-  switch (action.type) {
-    case SET_JOB:
-      return {
-        ...state,
-        jobAdd: action.payload,
-      };
-    case ADD_JOB:
-      return {
-        ...state,
-        jobsAdd: [...state.jobsAdd, action.payload],
-      };
-    case DELETE_JOB:
-      const newJobs = [...state.jobsAdd];
-      newJobs.splice(action.payload, 1);
-
-      return {
-        ...state,
-        jobsAdd: newJobs,
-      };
-    default:
-      throw new Error("Invalid");
-  }
-};
-
 function Main() {
-  const [jobsAPI, setJobsApi] = useState([]);
   const [state, dispatch] = useReducer(reducer, initState);
 
-  const { jobAdd, jobsAdd, completed } = state;
+  const [jobsAPI, setJobsApi] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const { jobAdd, jobsAdd, completed } = state;
   const inputRef = useRef();
 
-  // Chỉnh Sửa Công Việc Được Add Từ Người Dùng
+  // Chỉnh Sửa Công Việc Được Thêm Từ Người Dùng
   const handleEdit_jobAdd = (item) => {
     dispatch(setJob(item));
     dispatch(deleteJob(item));
@@ -90,14 +34,22 @@ function Main() {
     }
   };
 
+  //   Chỉnh Sửa Trạng Thái Của Công Việc Được Lấy Từ API
+  const handleStatus_jobAdd = (isCompleted) => {
+    console.log(jobsAdd);
+  };
+
   //   Gọi API
   const handleShow_jobApi = async () => {
+    setLoading(true);
     try {
       const res = await fetch(url);
       const newJob = await res.json();
       setJobsApi(newJob);
+      setLoading(false);
     } catch (error) {
-      throw new Error(error);
+      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -115,11 +67,26 @@ function Main() {
 
     inputRef.current.focus();
   };
+  //   Chỉnh Sửa Trạng Thái Của Công Việc Được Lấy Từ API
+  const handleStatus_jobApi = (index) => {
+    const newStatus = jobsAPI.map((item) =>
+      item.id === index ? { ...item, completed: !item.completed } : item
+    );
+    setJobsApi(newStatus);
+  };
 
   //   Render Công Viêc Được Lấy Công Việc Từ API
   useEffect(() => {
     handleShow_jobApi();
   }, []);
+
+  if (loading) {
+    return (
+      <main>
+        <Loading />
+      </main>
+    );
+  }
 
   return (
     <div className="container">
@@ -138,8 +105,11 @@ function Main() {
           return (
             <li key={index} className="add__list">
               {job}{" "}
-              <span className={completed ? "green" : "red"}>
-                {completed ? "Đã Hoàn Thành" : "Chưa Hoàn Thành"}
+              <div>
+                <span className={completed ? "green" : "red"}>
+                  {completed ? "Đã Hoàn Thành" : "Chưa Hoàn Thành"}
+                </span>
+
                 <span
                   className="delete__job"
                   onClick={() => dispatch(deleteJob(index))}
@@ -152,7 +122,7 @@ function Main() {
                 >
                   Edit
                 </button>
-              </span>
+              </div>
             </li>
           );
         })}
@@ -163,8 +133,13 @@ function Main() {
           return (
             <li key={job.id}>
               {job.title}
-              <span className={job.completed ? "green" : "red"}>
-                {job.completed ? "Đã Hoàn Thành" : "Chưa Hoàn Thành"}
+              <div>
+                <span
+                  onClick={() => handleStatus_jobApi(job.id)}
+                  className={job.completed ? "green" : "red"}
+                >
+                  {job.completed ? "Đã Hoàn Thành" : "Chưa Hoàn Thành"}
+                </span>
                 <span
                   className="delete__job"
                   onClick={() => handleRemove_jobApi(job.id)}
@@ -177,7 +152,7 @@ function Main() {
                 >
                   Edit
                 </button>
-              </span>
+              </div>
             </li>
           );
         })}
